@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://C:/Program Files/Java/jdk1.8.0_102/misc/commons-io-2.5-src/src/main/java" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_102/misc/commons-io-2.5-src/src/test/java" />
+      <root url="file://C:/Program Files/Java/jdk1.8.0_102/misc/commons-io-2.5-src/src/main/java/org/apache/commons/io" />
+      <root url="file://$USER_HOME$/Downloads/httpcomponents-client-4.5.2-bin/httpcomponents-client-4.5.2/examples" />
+    </SOURCES>
+  </library>
+</component>
