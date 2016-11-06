@@ -7,7 +7,8 @@ class Main{
 
         String surveyID = "86455498";
         System.out.println(surveyController.getSurvey(surveyID, CONSTANT.token, CONSTANT.apiKey));
-        System.out.println(surveyController.getResponse(surveyID, CONSTANT.token, CONSTANT.apiKey));
+        //System.out.println(surveyController.getResponse(surveyID, CONSTANT.token, CONSTANT.apiKey));
 
+        JsonWorker.getResponseIDs(surveyController.getResponse(surveyID, CONSTANT.token, CONSTANT.apiKey));
     }
 }
