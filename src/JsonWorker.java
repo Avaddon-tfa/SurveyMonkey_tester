@@ -16,7 +16,7 @@ class JsonWorker {
 
         ArrayList<String> idList = new ArrayList<>();
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < responseList.size(); i++) {
             JSONObject temp = (JSONObject) responseList.get(i);
             idList.add(i, temp.get("id").toString());
         }
