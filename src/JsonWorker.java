@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 class JsonWorker {
 
-    static void getResponseIDs(String jsonString) throws ParseException {
+    static ArrayList<String> getResponseIDs(String jsonString) throws ParseException {
 
         JSONParser parser = new JSONParser();
 
@@ -19,8 +19,8 @@ class JsonWorker {
         for (int i = 0; i < responseList.size(); i++) {
             JSONObject temp = (JSONObject) responseList.get(i);
             idList.add(i, temp.get("id").toString());
+            System.out.println(idList.get(i));
         }
-
-        System.out.println(idList);
+        return idList;
     }
 }
