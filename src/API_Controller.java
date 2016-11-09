@@ -24,7 +24,8 @@ class API_Controller {
         try {
             String url = "https://api.surveymonkey.net/v3/surveys?api_key=" + key;
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(establishConnection(url, token).getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    establishConnection(url, token).getInputStream()));
             return in.readLine() + "\n";
 
         } catch (Exception e) {
@@ -38,16 +39,19 @@ class API_Controller {
 
         String url = "https://api.surveymonkey.net/v3/surveys/"+ id + "?api_key=" + key;
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(establishConnection(url, token).getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                establishConnection(url, token).getInputStream()));
         return in.readLine() + "\n";
     }
 
-    //Возвращает данные об ответах в исследовнии в формате JSON, из этого метода собираем ID всех ответов при помощи JsonWorker.getResponseIDs()
+    //Возвращает данные об ответах в исследовнии в формате JSON, из этого метода собираем ID всех ответов
+    // при помощи JsonWorker.getResponseIDs()
     private String getResponseList(String id, String token, String key) throws Exception {
 
         String url = "https://api.surveymonkey.net/v3/surveys/"+ id + "/responses?api_key=" + key;
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(establishConnection(url, token).getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                establishConnection(url, token).getInputStream()));
         return in.readLine() + "\n";
     }
 

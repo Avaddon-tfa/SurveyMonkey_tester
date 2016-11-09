@@ -9,7 +9,5 @@ class Main{
         //System.out.println(surveyController.getSurvey(surveyID, CONSTANT.token, CONSTANT.apiKey));
 
         surveyController.getDetailedResponse(surveyID, CONSTANT.token, CONSTANT.apiKey);
-
-
     }
 }
