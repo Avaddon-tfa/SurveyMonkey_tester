@@ -12,5 +12,6 @@
     <orderEntry type="library" name="org.apache.httpcomponents:fluent-hc:4.2" level="project" />
     <orderEntry type="library" name="examples" level="project" />
     <orderEntry type="library" name="junit:junit:4.9" level="project" />
+    <orderEntry type="library" name="com.googlecode.json-simple:json-simple:1.1.1" level="project" />
   </component>
 </module>
