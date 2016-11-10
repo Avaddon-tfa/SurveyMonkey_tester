@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 class JsonWorker {
 
-    static ArrayList<String> getResponseIDs(String jsonString) throws ParseException {
+    static ArrayList<String> getResponseIDs (String jsonString) throws ParseException {
 
         JSONParser parser = new JSONParser();
 
@@ -19,8 +19,35 @@ class JsonWorker {
         for (int i = 0; i < responseList.size(); i++) {
             JSONObject temp = (JSONObject) responseList.get(i);
             idList.add(i, temp.get("id").toString());
-            System.out.println(idList.get(i));
+            //System.out.println(idList.get(i));
         }
         return idList;
+    }
+
+    static void parseResponse (String responseJson) throws ParseException {
+
+        JSONParser parser = new JSONParser();
+
+        JSONObject jsonFullResponse = (JSONObject) parser.parse(responseJson);
+        JSONArray questionsList = (JSONArray) jsonFullResponse.get("pages");
+
+        int i = 0;
+        int j= 0;
+        while (i < questionsList.size()) {
+            JSONObject jsonAnswers = (JSONObject) questionsList.get(i);
+            JSONArray qaList = (JSONArray) jsonAnswers.get("questions");
+            System.out.println(qaList.toString());
+            i++;
+
+            while (j < qaList.size()) {
+                JSONObject temp = (JSONObject) qaList.get(j);
+                JSONArray answersList = (JSONArray) temp.get("answers");
+                System.out.println(answersList.toString());
+                j++;
+            }
+            //здесь еще надо допилить разбор отдельных пунктов, плюс разобраться, как АПИ-контроллеру определять, что значат
+            //плучаемые ID
+        }
+
     }
 }

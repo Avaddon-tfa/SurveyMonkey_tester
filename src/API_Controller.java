@@ -56,14 +56,15 @@ class API_Controller {
     }
 
     //Выводит в консоль все ответы респонднта
-    void getDetailedResponse(String id, String token, String key) throws Exception {
+    void getAllDetailedResponses(String id, String token, String key) throws Exception {
 
         for (String responseID: JsonWorker.getResponseIDs(getResponseList(id, CONSTANT.token, CONSTANT.apiKey))) {
 
             String url = "https://api.surveymonkey.net/v3/surveys/"+ id + "/responses/" + responseID + "/details?api_key=" + key;
 
             BufferedReader in = new BufferedReader(new InputStreamReader(establishConnection(url, token).getInputStream()));
-            System.out.println(in.readLine() + "\n");
+            JsonWorker.parseResponse(in.readLine());
+            System.out.println("\n");
         }
     }
 }
