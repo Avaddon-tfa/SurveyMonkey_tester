@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SurveyMobkey_tester.iml" filepath="$PROJECT_DIR$/SurveyMobkey_tester.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester.iml" filepath="$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester_main.iml" filepath="$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester_main.iml" group="SurveyMonkey_tester" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester_test.iml" filepath="$PROJECT_DIR$/.idea/modules/SurveyMonkey_tester_test.iml" group="SurveyMonkey_tester" />
     </modules>
   </component>
 </project>
