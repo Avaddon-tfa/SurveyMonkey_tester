@@ -1,6 +1,7 @@
 //migrated to MacOS
 
 import domain.Constants;
+import domain.Question;
 
 import java.io.File;
 import java.util.List;
@@ -17,10 +18,11 @@ class Main {
 
         String surveyID = "85694193";
 
-        Map<String, String> surveyKeys = JsonWorker.getResponseIDMap(surveyService.getSurveyDetails(surveyID, Constants.token, Constants.apiKey));
+        List<Question> surveyKeys = JsonWorker.getResponseIDMap(surveyService.getSurveyDetails(surveyID, Constants.token, Constants.apiKey));
         List<List<String>> allResponses = surveyService.getAllDetailedResponses(surveyID, Constants.token, Constants.apiKey);
 
-        System.out.println(surveyService.responseProcessor(allResponses, surveyKeys));
+        Map<String, Double> result = surveyService.responseProcessor(allResponses, surveyKeys);
 
+        System.out.println(result);
     }
 }

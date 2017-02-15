@@ -10,4 +10,5 @@ import groovy.transform.ToString
 class Choice {
     String id
     String text
+    Long weight
 }

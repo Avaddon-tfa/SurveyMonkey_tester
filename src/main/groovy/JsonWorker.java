@@ -1,3 +1,5 @@
+import domain.Choice;
+import domain.Question;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,9 +27,10 @@ class JsonWorker {
         return idList;
     }
 
-     static Map<String, String> getResponseIDMap (String responseJson) {
+     static ArrayList<Question> getResponseIDMap (String responseJson) {
 
-         Map<String, String > allSurveyIds = new HashMap<>();
+         //Map<String, String > allSurveyIds = new HashMap<>();
+         ArrayList<Question> questionsList = new ArrayList<>();
 
          JSONParser parser = new JSONParser();
          try {
@@ -53,28 +56,43 @@ class JsonWorker {
                      String questionName = (String) questionTemp.get("heading");
                      String questionId = (String) question.get("id");
 
+                     Question tempQuestion = new Question();
+                     tempQuestion.setId(questionId);
+                     tempQuestion.setText(questionName);
+
                      try {
                          JSONObject answersList = (JSONObject) question.get("answers");
                          JSONArray choices = (JSONArray) answersList.get("choices");
 
+                         List<Choice> tempChoisesList = new ArrayList<>();
+
                          for (Object choice1 : choices) {
                              JSONObject choice = (JSONObject) choice1;
+
                              String choicesId = (String) choice.get("id");
                              String choiceText = (String) choice.get("text");
                              Long choiceWeight = (Long) choice.get("weight");
-                             //System.out.println("Page " + i + " Question: " + questionName + " " + choicesId
-                             //        + " : " + choiceText + " (" + choiceWeight + ")");
-                             //allSurveyIds.put(choicesId, choiceText);
-                             if (choiceWeight != null)
-                             allSurveyIds.put(choicesId, questionName + ": " + choiceText);
+
+                             Choice newChoice = new Choice();
+
+                             newChoice.setId(choicesId);
+                             newChoice.setText(choiceText);
+                             newChoice.setWeight(choiceWeight);
+
+                             tempChoisesList.add(newChoice);
+
                          }
 
+                         tempQuestion.setChoices(tempChoisesList);
+
                      } catch (NullPointerException e) {
-                         System.out.println("getResponseIDMap NPE");
+                         //System.out.println("getResponseIDMap NPE");
                      }
                      j++;
 
-                     allSurveyIds.put(questionId, questionName);
+                     //tempQuestion.print();
+                     questionsList.add(tempQuestion);
+                     //allSurveyIds.put(questionId, questionName);
                  }
                 i++;
              }
@@ -83,7 +101,7 @@ class JsonWorker {
              e.printStackTrace();
          }
 
-         return allSurveyIds;
+         return questionsList;
      }
 
     static List<String> parseResponse (String responseJson) throws ParseException {

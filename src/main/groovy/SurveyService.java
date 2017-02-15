@@ -1,4 +1,6 @@
+import domain.Choice;
 import domain.Constants;
+import domain.Question;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -62,7 +64,7 @@ class SurveyService {
     // при помощи JsonWorker.getResponseIDs()
     private String getResponseList(String id, String token, String key) throws Exception {
 
-        String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/responses?api_key=" + key;
+        String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/responses?page=1&per_page=900&api_key=" + key;
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 establishConnection(url, token).getInputStream()));
@@ -85,36 +87,92 @@ class SurveyService {
         return allDetailedResponses;
     }
 
-    List<List<String>> responseProcessor (List<List<String>> allDetailedResponses, Map<String, String> surveyKeys) {
+    Map<String, Double> responseProcessor (List<List<String>> allDetailedResponses, List<Question> surveyKeys) {
 
-        Map<String, Integer> responseCounter = new HashMap<>();
+        HashMap <String, Double> rates = new HashMap<>();
+        HashMap <String, Double> counter = new HashMap<>();
+        Map <String, Double> finalRating = new TreeMap<>();
+
+
+        for (Question q: surveyKeys) {
+            if (q.getChoices() != null) {
+                for (Choice choice: q.getChoices()) {
+                    rates.put(choice.getText(), 0.0);
+                    counter.put(choice.getText(), 0.0);
+                    finalRating.put(choice.getText(), 0.0);
+                }
+            }
+        }
 
         for (List<String> response: allDetailedResponses) {
 
             for (String choice_id: response) {
+
                 if (choice_id != null) {
-                    if (responseCounter.containsKey(choice_id)) {
-                        Integer n = responseCounter.get(choice_id) + 1;
-                        responseCounter.put(choice_id, n);
+                    //здесь надо взять id следующего ответа из response
+                    if (response.indexOf(choice_id) + 1 < response.size()) {
+                        String nextId = response.get(response.indexOf(choice_id) + 1);
+
+                        for (Question q : surveyKeys) {
+
+                            if (q.getChoices() != null) {
+
+                                for (Choice choice : q.getChoices()) {
+
+                                    try {
+
+                                        if (choice.getId().equals(choice_id) && surveyKeys.get(surveyKeys.indexOf(q) + 1).getChoices().get(1).getWeight() != null) {
+
+                                            //получаем формулировку вопроса
+                                            String choiceText = choice.getText();
+
+                                            //получаем вес ответа на вопрос из Surveykeys
+                                            Question nextQuestion = surveyKeys.get(surveyKeys.indexOf(q) + 1);
+
+                                            for (Choice nextChoice : nextQuestion.getChoices()) {
+                                                if (nextChoice.getId().equals(nextId)) {
+
+                                                    Long weight = nextChoice.getWeight();
+
+                                                    //System.out.println(choice.getText() + " " + weight);
+
+                                                    //прибавить в темп
+                                                    Double temp = (double) rates.get(choiceText) + weight;
+                                                    Double numOfEntries = counter.get(choiceText) + 1;
+
+                                                    rates.put(choiceText, temp);
+                                                    counter.put(choiceText, numOfEntries);
+                                                }
+                                            }
+                                        }
+
+                                    } catch (NullPointerException e) {
+                                        continue;
+                                    } catch (IndexOutOfBoundsException e) {
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    else {
-                    responseCounter.put(choice_id, 0);}
                 }
             }
-
             //System.out.println(responseCounter);
         }
 
-        Map<String, Integer> treeMap = new TreeMap<>(responseCounter);
-
-
-        Iterator<Map.Entry<String, Integer>> entries = treeMap.entrySet().iterator();
+        Iterator<Map.Entry<String, Double>> entries = finalRating.entrySet().iterator();
         while (entries.hasNext()) {
 
-            Map.Entry<String, Integer> entry = entries.next();
-            System.out.println((surveyKeys.get(entry.getKey()) + " : " + entry.getValue()));
+            Map.Entry<String, Double> entry = entries.next();
+
+            if (counter.get(entry.getKey()) != 0) {
+
+                Double calculatedRate = rates.get(entry.getKey()) / counter.get(entry.getKey());
+
+                entry.setValue(calculatedRate);
+            } else entries.remove();
         }
 
-        return allDetailedResponses;
+        return finalRating;
     }
 }
