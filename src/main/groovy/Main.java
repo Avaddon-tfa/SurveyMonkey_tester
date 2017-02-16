@@ -1,17 +1,12 @@
 //migrated to MacOS
 
-import domain.Constants;
-import domain.Question;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
 class Main {
 
     public static void main(String[]args) throws Exception {
 
-        SurveyService surveyService = new SurveyService();
+        GUI form = new GUI();
+
+        /*SurveyService surveyService = new SurveyService();
 
         //System.out.println(surveyService.getSurveyList(Constants.token, Constants.apiKey));
         //surveyService.getSurveyDetails(surveyID, Constants.token, Constants.apiKey);
@@ -23,6 +18,13 @@ class Main {
 
         Map<String, Double> result = surveyService.responseProcessor(allResponses, surveyKeys);
 
-        System.out.println(result);
+        Iterator<Map.Entry<String, Double>> entries = result.entrySet().iterator();
+        while (entries.hasNext()) {
+
+            Map.Entry<String, Double> entry = entries.next();
+
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        */
     }
 }

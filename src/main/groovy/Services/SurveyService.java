@@ -1,3 +1,5 @@
+package Services;
+
 import domain.Choice;
 import domain.Constants;
 import domain.Question;
@@ -11,10 +13,10 @@ import java.util.*;
 //Это порт API SurveyMonkey под Java.
 //JSON возвращается в Unicode
 
-class SurveyService {
+public class SurveyService {
     //TODO переписать исключения
     //Метод установки соединения, получает на вход ссылку и токен, возвращает коннекшн, который потом мы отдаем в чтение.
-    private URLConnection establishConnection(String url, String token) throws Exception {
+    public URLConnection establishConnection(String url, String token) throws Exception {
 
         URL readUrl = new URL(url);
         URLConnection connection = readUrl.openConnection();
@@ -50,7 +52,7 @@ class SurveyService {
     }
 
     //v3/surveys/{survey_id}/details
-    String getSurveyDetails(String id, String token, String key) throws Exception {
+    public String getSurveyDetails(String id, String token, String key) throws Exception {
 
         String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/details?api_key=" + key;
 
@@ -61,8 +63,8 @@ class SurveyService {
     }
 
     //Возвращает данные об ответах в исследовнии в формате JSON, из этого метода собираем ID всех ответов
-    // при помощи JsonWorker.getResponseIDs()
-    private String getResponseList(String id, String token, String key) throws Exception {
+    // при помощи Services.JsonWorker.getResponseIDs()
+    public String getResponseList(String id, String token, String key) throws Exception {
 
         String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/responses?page=1&per_page=900&api_key=" + key;
 
@@ -73,7 +75,7 @@ class SurveyService {
     }
 
     //Отдает массив ID всех ответов всех респондентов
-    List<List<String>> getAllDetailedResponses(String id, String token, String key) throws Exception {
+    public List<List<String>> getAllDetailedResponses(String id, String token, String key) throws Exception {
 
         List<List<String>> allDetailedResponses = new ArrayList<>();
 
@@ -87,7 +89,7 @@ class SurveyService {
         return allDetailedResponses;
     }
 
-    Map<String, Double> responseProcessor (List<List<String>> allDetailedResponses, List<Question> surveyKeys) {
+    public Map<String, Double> responseProcessor(List<List<String>> allDetailedResponses, List<Question> surveyKeys) {
 
         HashMap <String, Double> rates = new HashMap<>();
         HashMap <String, Double> counter = new HashMap<>();

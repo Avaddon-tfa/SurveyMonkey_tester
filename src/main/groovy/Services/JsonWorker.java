@@ -1,3 +1,5 @@
+package Services;
+
 import domain.Choice;
 import domain.Question;
 import org.json.simple.JSONArray;
@@ -8,7 +10,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.*;
 
-class JsonWorker {
+public class JsonWorker {
 
     static ArrayList<String> parseResponseIDs (String jsonString) throws ParseException {
 
@@ -27,7 +29,7 @@ class JsonWorker {
         return idList;
     }
 
-     static ArrayList<Question> getResponseIDMap (String responseJson) {
+     public static ArrayList<Question> getResponseIDMap(String responseJson) {
 
          //Map<String, String > allSurveyIds = new HashMap<>();
          ArrayList<Question> questionsList = new ArrayList<>();
