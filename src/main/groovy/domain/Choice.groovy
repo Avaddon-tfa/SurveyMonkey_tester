@@ -8,7 +8,7 @@ import groovy.transform.ToString
  */
 @Canonical
 class Choice {
-    String id
-    String text
-    Long weight
+    String id;
+    String text;
+    Long weight;
 }

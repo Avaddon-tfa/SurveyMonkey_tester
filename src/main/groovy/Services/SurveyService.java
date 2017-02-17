@@ -6,12 +6,14 @@ import domain.Question;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 
 //Это порт API SurveyMonkey под Java.
 //JSON возвращается в Unicode
+// 85694193
 
 public class SurveyService {
     //TODO переписать исключения
@@ -29,10 +31,10 @@ public class SurveyService {
     //Возвращает список имеющихся исследований в формате JSON
     String getSurveyList(String token, String key) {
         try {
-            String url = "https://api.surveymonkey.net/v3/surveys?per_page=150&api_key=" + key;
+            String url = "https://api.surveymonkey.net/v3/surveys?per_page=50&api_key=" + key;
 
             BufferedReader in = new BufferedReader(new InputStreamReader(
-                    establishConnection(url, token).getInputStream()));
+                                    establishConnection(url, token).getInputStream()));
             return in.readLine() + "\n";
 
         } catch (Exception e) {
@@ -47,7 +49,7 @@ public class SurveyService {
         String url = "https://api.surveymonkey.net/v3/surveys/" + id + "?api_key=" + key;
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                establishConnection(url, token).getInputStream()));
+                                    establishConnection(url, token).getInputStream()));
         return in.readLine() + "\n";
     }
 
@@ -57,7 +59,7 @@ public class SurveyService {
         String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/details?api_key=" + key;
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                establishConnection(url, token).getInputStream()));
+                                    establishConnection(url, token).getInputStream()));
 
         return in.readLine() + "\n";
     }
@@ -69,7 +71,7 @@ public class SurveyService {
         String url = "https://api.surveymonkey.net/v3/surveys/" + id + "/responses?page=1&per_page=900&api_key=" + key;
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                establishConnection(url, token).getInputStream()));
+                                    establishConnection(url, token).getInputStream()));
 
         return in.readLine() + "\n";
     }
@@ -89,22 +91,40 @@ public class SurveyService {
         return allDetailedResponses;
     }
 
-    public Map<String, Double> responseProcessor(List<List<String>> allDetailedResponses, List<Question> surveyKeys) {
+    public Map<String, BigDecimal> responseProcessor(List<List<String>> allDetailedResponses, List<Question> surveyKeys) {
 
         HashMap <String, Double> rates = new HashMap<>();
         HashMap <String, Double> counter = new HashMap<>();
-        Map <String, Double> finalRating = new TreeMap<>();
+        Map <String, BigDecimal> finalRating = new TreeMap<>();
 
 
-        for (Question q: surveyKeys) {
-            if (q.getChoices() != null) {
-                for (Choice choice: q.getChoices()) {
-                    rates.put(choice.getText(), 0.0);
-                    counter.put(choice.getText(), 0.0);
-                    finalRating.put(choice.getText(), 0.0);
-                }
+        surveyKeys.stream().filter(q -> q.getChoices() != null).forEach(q -> {
+
+            if (q.getText().contains("кейноут")) {
+
+                String talk2 = q.getText().replace("<strong>", "");
+                String talk1 = talk2.replace("</strong>", "");
+                String talk0 = talk1.replace("Оцените кейноут ", "");
+                String talk = talk0.replace("<br>", "");
+                String keynote = talk.replace("<br />", " — ");
+
+                rates.put(keynote, 0.0);
+                counter.put(keynote, 0.0);
+                finalRating.put(keynote, BigDecimal.valueOf(0));
             }
-        }
+
+            for (Choice choice : q.getChoices()) {
+
+                String talk2 = choice.getText().replace("<strong>", "");
+                String talk1 = talk2.replace("</strong>", "");
+                String talk = talk1.replace("<br />", " — ");
+
+                rates.put(talk, 0.0);
+                counter.put(talk, 0.0);
+                finalRating.put(talk, BigDecimal.valueOf(0));
+
+            }
+        });
 
         for (List<String> response: allDetailedResponses) {
 
@@ -123,10 +143,35 @@ public class SurveyService {
 
                                     try {
 
-                                        if (choice.getId().equals(choice_id) && surveyKeys.get(surveyKeys.indexOf(q) + 1).getChoices().get(1).getWeight() != null) {
+                                        boolean choiceFits = choice.getId().equals(choice_id);
+
+                                        if (choiceFits && surveyKeys.get(surveyKeys.indexOf(q)).getText().contains("кейноут")) {
+
+                                            String talk2 = q.getText().replace("<strong>", "");
+                                            String talk1 = talk2.replace("</strong>", "");
+                                            String talk0 = talk1.replace("Оцените кейноут ", "");
+                                            String talk = talk0.replace("<br>", "");
+                                            String keynote = talk.replace("<br />", " — ");
+
+                                            Long weight = choice.getWeight();
+
+                                            if (weight != 0) {
+                                                Double temp = (double) rates.get(keynote) + weight;
+                                                Double numOfEntries = counter.get(keynote) + 1;
+
+                                                rates.put(keynote, temp);
+                                                counter.put(keynote, numOfEntries);
+                                            }
+
+                                        }
+
+                                        if (choiceFits && surveyKeys.get(surveyKeys.indexOf(q) + 1).getChoices().get(1).getWeight() != null) {
 
                                             //получаем формулировку вопроса
-                                            String choiceText = choice.getText();
+                                            String talk2 = choice.getText().replace("<strong>", "");
+                                            String talk1 = talk2.replace("</strong>", "");
+                                            String talk0 = talk1.replace("<br>", "");
+                                            String talk = talk0.replace("<br />", " — ");
 
                                             //получаем вес ответа на вопрос из Surveykeys
                                             Question nextQuestion = surveyKeys.get(surveyKeys.indexOf(q) + 1);
@@ -136,14 +181,12 @@ public class SurveyService {
 
                                                     Long weight = nextChoice.getWeight();
 
-                                                    //System.out.println(choice.getText() + " " + weight);
-
                                                     //прибавить в темп
-                                                    Double temp = (double) rates.get(choiceText) + weight;
-                                                    Double numOfEntries = counter.get(choiceText) + 1;
+                                                    Double temp = (double) rates.get(talk) + weight;
+                                                    Double numOfEntries = counter.get(talk) + 1;
 
-                                                    rates.put(choiceText, temp);
-                                                    counter.put(choiceText, numOfEntries);
+                                                    rates.put(talk, temp);
+                                                    counter.put(talk, numOfEntries);
                                                 }
                                             }
                                         }
@@ -159,19 +202,20 @@ public class SurveyService {
                     }
                 }
             }
-            //System.out.println(responseCounter);
         }
 
-        Iterator<Map.Entry<String, Double>> entries = finalRating.entrySet().iterator();
+        Iterator<Map.Entry<String, BigDecimal>> entries = finalRating.entrySet().iterator();
         while (entries.hasNext()) {
 
-            Map.Entry<String, Double> entry = entries.next();
+            Map.Entry<String, BigDecimal> entry = entries.next();
 
-            if (counter.get(entry.getKey()) != 0) {
+            if (counter.get(entry.getKey()) != 0 && entry.getKey().contains(" / ")) {
 
-                Double calculatedRate = rates.get(entry.getKey()) / counter.get(entry.getKey());
+                Double temp = rates.get(entry.getKey()) / counter.get(entry.getKey()) / 10;
+                BigDecimal calculatedRate = new BigDecimal(temp).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
                 entry.setValue(calculatedRate);
+
             } else entries.remove();
         }
 

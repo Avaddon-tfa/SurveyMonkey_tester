@@ -2,6 +2,7 @@ import Services.JsonWorker;
 import Services.SurveyService;
 import domain.Constants;
 import domain.Question;
+import domain.Runner;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ class GUI extends JFrame {
     private JButton startButton;
     private JTextArea textArea1;
     private JPanel panel1;
+    private JScrollBar scrollBar1;
 
     public GUI() {
 
@@ -30,27 +32,14 @@ class GUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String surveyId = putSurveyIDHereTextField.getText();
 
-                SurveyService surveyService = new SurveyService();
+                Runner runner = new Runner();
 
-                try {
-                    List<Question> surveyKeys = JsonWorker.getResponseIDMap(surveyService.getSurveyDetails(surveyId, Constants.token, Constants.apiKey));
+                runner.setId(putSurveyIDHereTextField.getText());
+                runner.setTextArea1(textArea1);
 
-                    List<List<String>> allResponses = surveyService.getAllDetailedResponses(surveyId, Constants.token, Constants.apiKey);
+                runner.start();
 
-                Map<String, Double> result = surveyService.responseProcessor(allResponses, surveyKeys);
-
-                Iterator<Map.Entry<String, Double>> entries = result.entrySet().iterator();
-                while (entries.hasNext()) {
-
-                    Map.Entry<String, Double> entry = entries.next();
-
-                    textArea1.append(entry.getKey() + ": " + entry.getValue() + "\n");
-                }
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
             }
         });
 
