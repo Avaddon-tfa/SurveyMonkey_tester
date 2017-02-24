@@ -8,9 +8,9 @@ import groovy.transform.Canonical
  */
 @Canonical
 class Question {
-    String id
-    String text
-    List<Choice> choices
+    String id;
+    String text;
+    List<Choice> choices;
 
     public void print () {
 

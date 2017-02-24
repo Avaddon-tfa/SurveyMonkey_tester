@@ -5,7 +5,6 @@ import Services.SurveyService;
 
 import javax.swing.*;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +36,7 @@ public class Runner extends Thread {
         try {
 
             List<Question> surveyKeys = JsonWorker.getResponseIDMap(surveyService.getSurveyDetails(id, Constants.token, Constants.apiKey));
-
             List<List<String>> allResponses = surveyService.getAllDetailedResponses(id, Constants.token, Constants.apiKey);
-
             Map<String, BigDecimal> result = surveyService.responseProcessor(allResponses, surveyKeys);
 
             int counter = 0;

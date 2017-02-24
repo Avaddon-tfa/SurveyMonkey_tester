@@ -18,7 +18,6 @@ class GUI extends JFrame {
     private JButton startButton;
     private JTextArea textArea1;
     private JPanel panel1;
-    private JScrollBar scrollBar1;
 
     public GUI() {
 
@@ -29,18 +28,15 @@ class GUI extends JFrame {
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        startButton.addActionListener(e -> {
 
-                Runner runner = new Runner();
+            Runner runner = new Runner();
 
-                runner.setId(putSurveyIDHereTextField.getText());
-                runner.setTextArea1(textArea1);
+            runner.setId(putSurveyIDHereTextField.getText());
+            runner.setTextArea1(textArea1);
 
-                runner.start();
+            runner.start();
 
-            }
         });
 
         setVisible(true);

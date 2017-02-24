@@ -22,16 +22,16 @@ public class JsonWorker {
         ArrayList<String> idList = new ArrayList<>();
 
         for (int i = 0; i < responseList.size(); i++) {
+
             JSONObject temp = (JSONObject) responseList.get(i);
             idList.add(i, temp.get("id").toString());
-            //System.out.println(idList.get(i));
+
         }
         return idList;
     }
 
      public static ArrayList<Question> getResponseIDMap(String responseJson) {
 
-         //Map<String, String > allSurveyIds = new HashMap<>();
          ArrayList<Question> questionsList = new ArrayList<>();
 
          JSONParser parser = new JSONParser();
@@ -47,9 +47,6 @@ public class JsonWorker {
 
                  JSONObject p = (JSONObject) surveyPages.get(i);
                  JSONArray questionsOnPage = (JSONArray) p.get("questions");
-
-                 //System.out.println("Page " + i + " of " + surveyPages.size() + " " + questionsOnPage.size() + "\n");
-
 
                  while (j < questionsOnPage.size()) {
                      JSONObject question = (JSONObject) questionsOnPage.get(j);
@@ -88,13 +85,10 @@ public class JsonWorker {
                          tempQuestion.setChoices(tempChoisesList);
 
                      } catch (NullPointerException e) {
-                         //System.out.println("getResponseIDMap NPE");
                      }
                      j++;
 
-                     //tempQuestion.print();
                      questionsList.add(tempQuestion);
-                     //allSurveyIds.put(questionId, questionName);
                  }
                 i++;
              }
@@ -126,11 +120,12 @@ public class JsonWorker {
             while (j < qaList.size()) {
                 JSONObject temp = (JSONObject) qaList.get(j);
                 JSONArray answersList = (JSONArray) temp.get("answers");
-                    for (int z = 0; z < answersList.size(); z++) {
-                        JSONObject answer = (JSONObject) answersList.get(z);
-                        String answerId = (String) answer.get("choice_id");
-                        parsedResponse.add(answerId);
-                    }
+
+                for (Object anAnswersList : answersList) {
+                    JSONObject answer = (JSONObject) anAnswersList;
+                    String answerId = (String) answer.get("choice_id");
+                    parsedResponse.add(answerId);
+                }
                 j++;
             }
             i++;
