@@ -11,11 +11,8 @@ import java.util.Map;
 
 public class Runner extends Thread {
 
-    //private JTextField putSurveyIDHereTextField;
     private JTextArea textArea1;
-
     private String id;
-
     public void setId(String id) {
 
         this.id = id;
@@ -50,7 +47,6 @@ public class Runner extends Thread {
             e1.printStackTrace();
         }
     }
-
 }
 
 

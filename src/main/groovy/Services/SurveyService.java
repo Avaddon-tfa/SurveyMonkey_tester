@@ -5,6 +5,7 @@ import domain.Constants;
 import domain.Question;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -56,14 +57,23 @@ public class SurveyService {
     }
 
     //v3/surveys/{survey_id}/details
-    public String getSurveyDetails(String id, String token, String key) throws Exception {
+    public String getSurveyDetails(String id, String token, String key) {
 
         String url = surveyMonkeyUrl + id + "/details?api_key=" + key;
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                                        connectionToSurvey(url, token).getInputStream()));
+        try {
 
-        return in.readLine() + "\n";
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                                            connectionToSurvey(url, token).getInputStream()));
+            return in.readLine() + "\n";
+
+        } catch (IOException e) {
+            System.out.println("IOException in getSureyDetails method");
+        } catch (Exception e) {
+            System.out.println("Some Exception in getSureyDetails method");
+        }
+
+        return url;
     }
 
     //Возвращает данные об ответах в исследовнии в формате JSON, из этого метода собираем ID всех ответов
